@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -341,6 +342,12 @@ public final class Bootstrap {
     public void start() throws Exception {
         if (catalinaDaemon == null) {
             init();
+        }
+
+        if (System.getProperty("java.security.manager") != null) {
+            String ttl = "30";
+            log.info("security manager is enabled, setting networkaddress.cache.ttl=" + ttl);
+            Security.setProperty("networkaddress.cache.ttl" , ttl);
         }
 
         Method method = catalinaDaemon.getClass().getMethod("start", (Class [])null);
